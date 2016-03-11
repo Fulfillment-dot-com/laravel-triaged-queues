@@ -29,7 +29,7 @@ class BeanstalkdConnector implements ConnectorInterface
         natsort($hosts);
 
         foreach($hosts as $host) {
-            $pheanstalk = new Pheanstalk($host, Arr::get($config, 'port', PheanstalkInterface::DEFAULT_PORT));
+            $pheanstalk = new Pheanstalk($config[$host], Arr::get($config, 'port', PheanstalkInterface::DEFAULT_PORT));
 
             // test pheanstalk to see if we have a connection
             $attempts = 0;
