@@ -1,0 +1,26 @@
+{
+    "name": "fulfillment/laravel-triaged-queues",
+    "description": "Extend Laravel 5 Queues to fallback to an arbitrary number of hosts in the event one is unreachable.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "FoxxMD",
+            "email": "matt.duncan13@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/contracts": "5.1.*",
+        "illuminate/container": "5.1.*",
+        "illuminate/support": "5.1.*",
+        "illuminate/log": "5.1.*",
+        "illuminate/queue": "5.1.*",
+        "pda/pheanstalk": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fulfillment\\TriagedQueues\\": "src/"
+        }
+    }
+}
