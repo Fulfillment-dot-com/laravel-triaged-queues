@@ -44,7 +44,7 @@ A normal Queue Connection from `config/queue.php` looks like this:
     ],
 ```
 
-TriagedQueues offers two extra entries:
+TriagedQueues offers three entries:
 
 ### hostN
 
@@ -77,6 +77,14 @@ EX:
 'host2'          => 'server-fallback2.domain.com',
 'fallbackToSync' => true
 ...
+```
+
+### attempts
+
+Adding an `attempts` entry will make TriagedQueues try to establish a connection X number of tries before moving to the next host.
+
+```php
+'attempts' => 2
 ```
 
 ## Contributing

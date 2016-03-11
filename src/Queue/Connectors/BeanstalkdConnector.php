@@ -23,6 +23,7 @@ class BeanstalkdConnector implements ConnectorInterface
     {
         // get all config keys with 'host' in it
         $hosts = array_filter(array_keys($config), function($key) { return strpos($key, 'host') !== false;});
+        $maxAttempts = isset($config['attempts']) ? $config['attempts'] : 1;
 
         // sort by numeric ending so we tier hosts correctly
         natsort($hosts);
@@ -31,13 +32,17 @@ class BeanstalkdConnector implements ConnectorInterface
             $pheanstalk = new Pheanstalk($host, Arr::get($config, 'port', PheanstalkInterface::DEFAULT_PORT));
 
             // test pheanstalk to see if we have a connection
-            if($pheanstalk->getConnection()->isServiceListening()) { // found a working host
-                return new BeanstalkdQueue(
-                    $pheanstalk, $config['queue'], Arr::get($config, 'ttr', Pheanstalk::DEFAULT_TTR)
-                );
-            } else {
-                Log::warning('Beanstalk host was unreachable.', ['beanstalkHost' => $host]);
+            $attempts = 0;
+            while($attempts < $maxAttempts) {
+                if($pheanstalk->getConnection()->isServiceListening()) { // found a working host
+                    return new BeanstalkdQueue(
+                        $pheanstalk, $config['queue'], Arr::get($config, 'ttr', Pheanstalk::DEFAULT_TTR)
+                    );
+                } else {
+                    $attempts++;
+                }
             }
+            Log::warning('Beanstalk host was unreachable.', ['beanstalkHost' => $host, 'beanstalkAttempts' => $maxAttempts]);
         }
 
         // no working service found!
