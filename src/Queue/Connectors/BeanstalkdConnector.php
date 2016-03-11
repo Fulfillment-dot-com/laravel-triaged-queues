@@ -42,7 +42,7 @@ class BeanstalkdConnector implements ConnectorInterface
                     $attempts++;
                 }
             }
-            Log::warning('Beanstalk host was unreachable.', ['beanstalkHost' => $host, 'beanstalkAttempts' => $maxAttempts]);
+            Log::warning('Beanstalk host was unreachable.', ['beanstalkHost' => $config[$host], 'beanstalkAttempts' => $maxAttempts]);
         }
 
         // no working service found!
