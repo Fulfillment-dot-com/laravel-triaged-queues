@@ -21,6 +21,12 @@ After adding the package, add the ServiceProvider to the providers array in `con
 Fulfillment\TriagedQueues\TriagedQueueServiceProvider::class,
 ```
 
+and remove Laravel's `QueueServiceProvider` if present in  `config/app.php`
+
+```php
+'Illuminate\Queue\QueueSeverProvider'
+```
+
 ## Supported Drivers
 
 Currently only the `beanstalkd` driver is supported. PRs for additional drivers are welcome.
@@ -85,4 +91,4 @@ Then make a PR and I will happily accept it :)
 
 ## License
 
-This package is licensed under the [MIT license](https://github.com/Fulfillment-dot-com/api-wrapper-php/blob/master/LICENSE.txt).
+This package is licensed under the [MIT license](https://github.com/Fulfillment-dot-com/laravel-triaged-queues/blob/master/LICENSE.txt).
