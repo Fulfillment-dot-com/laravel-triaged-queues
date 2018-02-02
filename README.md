@@ -6,6 +6,7 @@ This package extends Laravel 5 Queues by adding these features:
 
 * Enable connection attempts to multiple hosts, sequentially, in the event the primary host is unreachable.
 * If all hosts for a connection fail, enable falling back to the `sync` driver so that a job/command can be processed synchronously and therefore avoid data loss.
+* (Beanstalkd Only) An extra `touch()` pheanstalk command is available on jobs and socket timeout can be specified via queue config.
 
 ## Installation
 
@@ -41,6 +42,7 @@ A normal Queue Connection from `config/queue.php` looks like this:
     'host'           => env('BEANSTALK_HOST', 'localhost'),
     'queue'          => 'default',
     'ttr'            => 60,
+    'socketTimeout'  => null
     ],
 ```
 
@@ -86,6 +88,16 @@ Adding an `attempts` entry will make TriagedQueues try to establish a connection
 ```php
 'attempts' => 2
 ```
+
+### touch() (Beanstalkd Only)
+
+A modified version of the `BeanstalkdJob` includes a `touch()` method which will send a `touch` command for the job to the beanstalkd queue. This resets the time-left (TTR minus running time) on the job so it isn't kicked back to the ready queue.
+
+### socketTimeout (Beanstalkd Only)
+
+If a job is long-running one must either increase TTR (time-to-run) for the job or `touch` it periodically to keep it reserved. However there is another factor that determines job behavior: [if the client disconnects while a job is reserved the job will be kicked back to the ready queue regardless of TTR](https://github.com/kr/beanstalkd/issues/11#issue-29600).
+
+So for jobs that run longer than the default socket timeout (60 seconds, in ini settings) one must `touch` the job periodically, change this ini setting, or use the `socketTimeout` key-value in the configuration to specify timeout manually for `fsockopen`.
 
 ## Contributing
 

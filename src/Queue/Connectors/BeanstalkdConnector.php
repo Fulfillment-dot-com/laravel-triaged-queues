@@ -3,6 +3,7 @@
 namespace Fulfillment\TriagedQueues\Queue\Connectors;
 
 use Fulfillment\TriagedQueues\Exceptions\NoHostException;
+use Fulfillment\TriagedQueues\Queue\BetterBeanstalkdQueue;
 use Illuminate\Queue\BeanstalkdQueue;
 use Illuminate\Queue\Connectors\ConnectorInterface;
 use Illuminate\Support\Arr;
@@ -29,13 +30,13 @@ class BeanstalkdConnector implements ConnectorInterface
         natsort($hosts);
 
         foreach($hosts as $host) {
-            $pheanstalk = new Pheanstalk($config[$host], Arr::get($config, 'port', PheanstalkInterface::DEFAULT_PORT));
+            $pheanstalk = new Pheanstalk($config[$host], Arr::get($config, 'port', PheanstalkInterface::DEFAULT_PORT), Arr::get($config, 'socketTimeout'));
 
             // test pheanstalk to see if we have a connection
             $attempts = 0;
             while($attempts < $maxAttempts) {
                 if($pheanstalk->getConnection()->isServiceListening()) { // found a working host
-                    return new BeanstalkdQueue(
+                    return new BetterBeanstalkdQueue(
                         $pheanstalk, $config['queue'], Arr::get($config, 'ttr', Pheanstalk::DEFAULT_TTR)
                     );
                 } else {
