@@ -17,7 +17,7 @@ class BetterSyncQueue extends SyncQueue
 	 *
 	 * @return \Illuminate\Contracts\Queue\Job
 	 */
-	protected function resolveJob($payload, $queue = null)
+	protected function resolveJob($payload, $queue)
 	{
 		return new BetterSyncJob($this->container, $payload, $queue);
 	}
