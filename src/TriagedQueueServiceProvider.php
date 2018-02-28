@@ -5,6 +5,7 @@ namespace Fulfillment\TriagedQueues;
 
 
 use Fulfillment\TriagedQueues\Queue\Connectors\BeanstalkdConnector;
+use Fulfillment\TriagedQueues\Queue\Connectors\SyncConnector;
 use Fulfillment\TriagedQueues\Queue\QueueManager;
 use Illuminate\Queue\QueueServiceProvider;
 
@@ -32,4 +33,11 @@ class TriagedQueueServiceProvider extends QueueServiceProvider
             return new BeanstalkdConnector();
         });
     }
+
+	protected function registerSyncConnector($manager)
+	{
+		$manager->addConnector('sync', function () {
+			return new SyncConnector;
+		});
+	}
 }
