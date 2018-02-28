@@ -1,8 +1,8 @@
-# Laravel 5 Triaged Queues
+# Laravel 5.1 Triaged Queues
 
-*Extend Laravel 5 Queues to fallback to an arbitrary number of hosts in the event one is unreachable.*
+*Extend Laravel 5.1 Queues to fallback to an arbitrary number of hosts in the event one is unreachable.*
 
-This package extends Laravel 5 Queues by adding these features:
+This package extends Laravel 5.1 Queues by adding these features:
 
 * Enable connection attempts to multiple hosts, sequentially, in the event the primary host is unreachable.
 * If all hosts for a connection fail, enable falling back to the `sync` driver so that a job/command can be processed synchronously and therefore avoid data loss.
