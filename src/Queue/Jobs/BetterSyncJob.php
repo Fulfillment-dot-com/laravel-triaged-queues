@@ -18,7 +18,7 @@ class BetterSyncJob extends SyncJob
 	 *
 	 * @return void
 	 */
-	public function __construct(Container $container, $payload, $queue)
+	public function __construct(Container $container, $payload, $queue = null)
 	{
 		$this->queue = $queue;
 		parent::__construct($container, $payload);
