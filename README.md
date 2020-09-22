@@ -99,6 +99,51 @@ If a job is long-running one must either increase TTR (time-to-run) for the job 
 
 So for jobs that run longer than the default socket timeout (60 seconds, in ini settings) one must `touch` the job periodically, change this ini setting, or use the `socketTimeout` key-value in the configuration to specify timeout manually for `fsockopen`.
 
+### Custom Queued Job
+
+The default class that handles the "firing" of the command you have dispatched from the queued is `Illuminate\Queue\CallQueuedHandler`. However this default functionality does not allow a user to setup any logic for before the command is fired.
+
+Using the `job` property in each Queue Connection you may specify an arbitrary `class@method` that will be called instead of `CallQueuedHandler` **when using automatic payload creation.** This means this only works if you use `Bus::dispatch()` or a similar method where the dispatcher creates the payload for you (and it is not a closure or raw payload).
+ 
+Config looks like this:
+
+```php
+'beanstalkd' => [
+    'driver'         => 'beanstalkd',
+    'host'           => env('BEANSTALK_HOST', 'localhost'),
+    'queue'          => 'default',
+    'ttr'            => 60,
+    'socketTimeout'  => null,
+    'job'            => 'app\MyCustomHandler@call'
+    ],
+```
+
+I suggest you `extend` from `CallQueuedHandler` and override `call` to make things easier.
+
+An example of using this could be to set authentication for the laravel worker instance before the job is handled.
+
+```php
+class CallAuthenticatableQueuedHandler extends CallQueuedHandler
+{
+	public function call(Job $job, array $data)
+	{
+		$command = $this->setJobInstanceIfNecessary(
+			$job, unserialize($data['command'])
+		);
+  
+                // pipe an authentication middleware before the command is fired
+		$this->dispatcher->pipeThrough([AuthenticateDispatchedJob::class])->dispatchNow($command, function ($handler) use ($job) {
+			$this->setJobInstanceIfNecessary($job, $handler);
+		});
+
+		if (! $job->isDeletedOrReleased()) {
+			$job->delete();
+		}
+	}
+}
+```
+
+
 ## Contributing
 
 Contributing additional drivers is welcomed! The steps for creating a new driver are simple:

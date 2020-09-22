@@ -3,7 +3,7 @@
 namespace Fulfillment\TriagedQueues\Queue\Connectors;
 
 use Fulfillment\TriagedQueues\Exceptions\NoHostException;
-use Fulfillment\TriagedQueues\Queue\BetterBeanstalkdQueue;
+use Fulfillment\TriagedQueues\Queue\Queues\BetterBeanstalkdQueue;
 use Illuminate\Queue\BeanstalkdQueue;
 use Illuminate\Queue\Connectors\ConnectorInterface;
 use Illuminate\Support\Arr;
@@ -11,7 +11,7 @@ use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use Log;
 
-class BeanstalkdConnector implements ConnectorInterface
+class BeanstalkdConnector extends \Illuminate\Queue\Connectors\BeanstalkdConnector
 {
     /**
      * Establish a queue connection.
@@ -36,9 +36,13 @@ class BeanstalkdConnector implements ConnectorInterface
             $attempts = 0;
             while($attempts < $maxAttempts) {
                 if($pheanstalk->getConnection()->isServiceListening()) { // found a working host
-                    return new BetterBeanstalkdQueue(
+                    $queue = new BetterBeanstalkdQueue(
                         $pheanstalk, $config['queue'], Arr::get($config, 'ttr', Pheanstalk::DEFAULT_TTR)
                     );
+                    if(null !== $job = Arr::get($config, 'job')) {
+						$queue->setCustomPayloadJob($job);
+                    }
+	                return $queue;
                 } else {
                     $attempts++;
                 }
