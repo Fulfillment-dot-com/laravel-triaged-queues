@@ -28,8 +28,6 @@ class QueueManager extends \Illuminate\Queue\QueueManager
             }
 
             $this->connections[$name]->setContainer($this->app);
-
-            $this->connections[$name]->setEncrypter($this->app['encrypter']);
         }
 
         return $this->connections[$name];
