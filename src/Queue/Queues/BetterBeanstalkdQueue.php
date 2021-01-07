@@ -24,7 +24,7 @@ class BetterBeanstalkdQueue extends BeanstalkdQueue
 		$job = $this->pheanstalk->watchOnly($queue)->reserve(0);
 
 		if ($job instanceof PheanstalkJob) {
-			return new BetterBeanstalkdJob($this->container, $this->pheanstalk, $job, $queue);
+			return new BetterBeanstalkdJob($this->container, $this->pheanstalk, $job, $this->connectionName, $queue);
 		}
 	}
 
