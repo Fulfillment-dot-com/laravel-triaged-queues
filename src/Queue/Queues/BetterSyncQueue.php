@@ -21,7 +21,7 @@ class BetterSyncQueue extends SyncQueue
 	 */
 	protected function resolveJob($payload, $queue)
 	{
-		return new BetterSyncJob($this->container, $payload, $queue);
+		return new BetterSyncJob($this->container, $payload, $this->connectionName, $queue);
 	}
 
 	protected function createPayload($job, $data = '', $queue = null)
