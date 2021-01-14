@@ -3,9 +3,10 @@
 
 namespace Fulfillment\TriagedQueues\Queue;
 use Fulfillment\TriagedQueues\Exceptions\NoHostException;
+use Illuminate\Queue\QueueManager as IlluminateQueueManager;
 use Log;
 
-class QueueManager extends \Illuminate\Queue\QueueManager
+class QueueManager extends IlluminateQueueManager
 {
     public function connection($name = null)
     {
@@ -19,9 +20,8 @@ class QueueManager extends \Illuminate\Queue\QueueManager
                 // check to see if config wants to use sync as fallback
                 if (isset($config['fallbackToSync']) && $config['fallbackToSync']) {
                     Log::warning("No working host found for driver $name. Falling back to sync driver.");
-                    $name = 'sync';
 
-                    $this->connections['sync'] = $this->resolve('sync');
+                    $this->connections[$name] = $this->resolve('sync');
                 } else {
                     throw $e;
                 }
