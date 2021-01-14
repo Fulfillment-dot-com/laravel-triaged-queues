@@ -12,6 +12,8 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.3.*|5.4.*|5.5.*",
+        "illuminate/queue": "^5.5",
+        "illuminate/log": "^5.5",
         "pda/pheanstalk": "^3.1"
     },
     "autoload": {
