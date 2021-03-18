@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Fulfillment\TriagedQueues\Queue\Queues\Beanstalkd;
+namespace Fulfillment\TriagedQueues\Queue\Queues;
 
 
 use Illuminate\Queue\Jobs\BeanstalkdJob;
